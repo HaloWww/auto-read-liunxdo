@@ -440,6 +440,11 @@ async function launchBrowserForUser(username, password) {
         waitUntil: "domcontentloaded",
         timeout: parseInt(process.env.NAV_TIMEOUT_MS || process.env.NAV_TIMEOUT || "120000", 10),
       });
+    } else if (loginUrl == "https://www.uscardforum.com") {
+      await page.goto("https://www.uscardforum.com/t/topic/438315/1", {
+        waitUntil: "domcontentloaded",
+        timeout: parseInt(process.env.NAV_TIMEOUT_MS || process.env.NAV_TIMEOUT || "120000", 10),
+      });
     } else {
       await page.goto(`${loginUrl}/t/topic/1`, {
         waitUntil: "domcontentloaded",
@@ -559,6 +564,16 @@ async function login(page, username, password, retryCount = 3) {
         timeout: parseInt(process.env.NAV_TIMEOUT_MS || process.env.NAV_TIMEOUT || "120000", 10),
       });
       await page.click(".discourse-reactions-reaction-button");
+    } else if (loginUrl == "https://www.uscardforum.com") {
+      await page.goto("https://www.uscardforum.com/t/topic/438315/1", {
+        waitUntil: "domcontentloaded",
+        timeout: parseInt(process.env.NAV_TIMEOUT_MS || process.env.NAV_TIMEOUT || "120000", 10),
+      });
+      try {
+        await page.click(".discourse-reactions-reaction-button");
+      } catch (error) {
+        console.log("没有找到点赞按钮，可能是页面没有加载完成或按钮不存在");
+      }
     } else {
       await page.goto(`${loginUrl}/t/topic/1`, {
         waitUntil: "domcontentloaded",
