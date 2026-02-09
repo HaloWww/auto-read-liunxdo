@@ -32,6 +32,7 @@
   const commentLimit = 2000;
   const topicListLimit = 200;
   const likeLimit = 20;
+  const delayBeforeBrowsingNewTopic = 3000; // 进入新帖子后延迟3秒再开始浏览（单位：毫秒），可根据需要调整
   // 获取当前页面的URL
   const currentURL = window.location.href;
 
@@ -145,6 +146,8 @@
     if (topicList.length > 0) {
       const topic = topicList.shift();
       localStorage.setItem("topicList", JSON.stringify(topicList));
+      // 设置标志，表示刚进入新帖子，需要延迟后再开始浏览
+      localStorage.setItem("justOpenedNewTopic", "true");
       if (topic.last_read_post_number) {
         window.location.href = `${BASE_URL}/t/topic/${topic.id}/${topic.last_read_post_number}`;
       } else {
@@ -182,10 +185,25 @@
       localStorage.getItem("autoLikeEnabled")
     );
     if (localStorage.getItem("read") === "true") {
-      console.log("执行正常的滚动和检查逻辑");
-      checkScroll();
-      if (isAutoLikeEnabled()) {
-        autoLike();
+      // 检查是否刚进入新帖子
+      if (localStorage.getItem("justOpenedNewTopic") === "true") {
+        console.log(`延迟 ${delayBeforeBrowsingNewTopic / 1000} 秒后开始浏览新帖子...`);
+        // 清除标志
+        localStorage.removeItem("justOpenedNewTopic");
+        // 延迟执行滚动和自动点赞
+        setTimeout(() => {
+          console.log("延迟时间到达，开始浏览");
+          checkScroll();
+          if (isAutoLikeEnabled()) {
+            autoLike();
+          }
+        }, delayBeforeBrowsingNewTopic);
+      } else {
+        console.log("执行正常的滚动和检查逻辑");
+        checkScroll();
+        if (isAutoLikeEnabled()) {
+          autoLike();
+        }
       }
     }
   });
