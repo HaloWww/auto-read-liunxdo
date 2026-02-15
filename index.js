@@ -31,7 +31,7 @@
   ];
   const commentLimit = 2000;
   const topicListLimit = 200;
-  const likeLimit = 20;
+  const likeLimit = 9;
   const delayBeforeBrowsingNewTopic = 3000; // 进入新帖子后延迟3秒再开始浏览（单位：毫秒），可根据需要调整
   // 获取当前页面的URL
   const currentURL = window.location.href;
